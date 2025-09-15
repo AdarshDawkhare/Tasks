@@ -1,0 +1,162 @@
+﻿<style>
+    .Tasks-OuterContainer
+    {
+        height:100%;
+        width:100%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .Tasks-Box {
+        height: 60%;
+        width: 40%;
+        border:2px solid white;
+        box-shadow: 0px 0px 25px 10px white;
+        border-radius:15px;
+        padding: 2%;
+        background-color: rgb(20, 33, 61);
+    }
+
+    .Tasks-Box:hover{
+        z-index:5;
+    }
+
+    .Tasks-Welcome
+    {
+        height:10%;
+        width:100%;
+        display:flex;
+        flex-direction:row;
+        align-items:center;      
+        font-size:25px;
+    }
+
+    .Tasks-Form
+    {
+        height:90%;
+        width:100%;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:space-evenly;
+    }
+
+    .form-group
+    {
+        width:100%;
+        height:20%;
+    }
+
+
+    #Tasks-SignInDivGroup {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #Tasks-RegisterDivGroup {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap:5%;
+    }
+
+</style>
+
+
+<div class="Tasks-OuterContainer">
+
+    <div class="Tasks-Box">
+
+        <div class="Tasks-Welcome">
+            Welcome
+        </div>
+
+        <div class="Tasks-Form">
+
+            <div class="form-group">
+                <input type="email" class="form-control" id="Tasks-Login-Email" placeholder="Enter Email">
+            </div>
+
+
+            <div class="form-group">
+                <input type="password" class="form-control"  id="Tasks-Login-Password" placeholder="Enter Your Password" />
+            </div>
+
+            <div class="form-group" id="Tasks-SignInDivGroup">
+                <button class="btn btn-primary" id="Tasks-Index-SignIn">Sign In</button>
+            </div>
+
+            <div class="form-group" id="Tasks-RegisterDivGroup">
+                <p>Not a member</p>
+                <button class="btn btn-primary" id="Tasks-Index-register">Register</button>
+            </div>
+       </div>
+       
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#Tasks-Index-register").click(function (event) {
+             
+                event.preventDefault();
+                console.log("Register button clicked in Index page");
+
+                location.href = '@Url.Action("ReturnRegisterView", "Home")';
+
+            });
+
+            $("#Tasks-Index-SignIn").click(function (event) {
+
+                event.preventDefault();
+                console.log("SignIn button clicked in Index page");
+
+                let email = document.querySelector("#Tasks-Login-Email").value;
+                let password = document.querySelector("#Tasks-Login-Password").value;
+
+                console.log("email - " + email);
+                console.log("password - " + password);
+
+                $.ajax({
+                    url: '@Url.Action("LoginUser", "Auth")',
+                    type: 'Post',
+                    contentType: 'application/json',
+                    data: JSON.stringify(
+                    {
+                         Email: email,
+                         UserPassword: password
+                    }),
+                    success: function (response) 
+                    {
+                        if (response.isSuccess === true && reponse.message === "Successfull");
+                        {
+                            location.href = '@Url.Action("ReturnLandingPage", "Home")';
+                        }
+                        
+                    },
+                    error: function (xhr, status, error) {
+
+                        if (xhr.status === 401) {
+                            alert("Authentication failed. Please check your username and password.");
+                        }
+                        else {
+                            alert("An error occurred. Please try again.");
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+ 

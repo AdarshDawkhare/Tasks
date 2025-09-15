@@ -1,0 +1,741 @@
+﻿<style>
+    
+    .Tasks-Inner-Container
+    {
+        height:100%;
+        width:100%;
+        display: flex;
+        flex-direction:column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .Tasks-Headings
+    {
+        height:12%;
+        width:100%;
+        background-color: rgb(224, 122, 95);
+        display:flex;
+        flex-direction:row;
+        align-items:center;
+        gap:2%;
+        padding-left:2%;
+        padding-right:2%;
+    }
+
+    .Tasks-Description
+    {
+        height:88%;
+        width:100%;
+        display:flex;
+        flex-direction:row;
+        align-items:center;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+        gap:30px;
+        background-color: rgb(229, 229, 229);
+        box-sizing: border-box;
+        overflow-y:scroll;
+        padding:1%;
+    }
+
+    .Tasks-Task
+    {
+        height:25%;
+        width:45%;
+        background-color: rgb(61, 64, 91); 
+        border: 1px solid white;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: row;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .Tasks-Task:hover {
+        transform: scale(1.1) translateZ(10px); /* Increase size and move along z-axis */
+        z-index: 2;
+        box-shadow: 0px 0px 15px 15px grey;
+    }
+
+    .Tasks-Task-Info
+    {
+        width:65%;
+        height:100%;
+        padding: 1%;
+    }
+
+    .Tasks-Task-Info-Div {
+        height: 100%;
+        width: 100%;
+        /* border: 1px solid white; */
+        border-radius: 15px;
+        padding: 1%;
+    }
+
+    .Tasks-Task-Info-Div-Heading {
+        height: 40%;
+        width: 100%;
+        border-bottom: 1px solid white;
+        font-size: 1.4em;
+        color:rgb(242, 204, 143); 
+    }
+
+    .Tasks-Task-Info-Div-Description {
+        height: 60%;
+        width: 100%;
+        font-size: 0.9em;
+        display: flex;
+        align-items: center;
+        color: rgb(244, 241, 222);
+        /* background-color:lightgreen; */
+    }
+
+    .Tasks-Task-Date
+    {
+        width:35%;
+        height:100%;
+        padding:1.5%;
+
+    }
+
+    .Tasks-Task-date-Div
+    {
+        height:100%;
+        width:100%;
+        border:1px solid white;
+        border-radius: 15px;
+        display:flex;
+        flex-direction:column;
+    }
+
+    .Tasks-Task-date-Div-Start
+    {
+        height:50%;
+        width:100%;
+        border-bottom:1px solid white;
+        display:flex;
+        flex-direction:row;
+    }
+
+    .Tasks-Task-date-Div-End 
+    {
+        height: 50%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .Tasks-Task-date-Div-heading
+    {
+        height:100%;
+        width:30%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-right:1px solid white;
+    }
+
+    .Tasks-Task-date-Div-DateTime
+    {
+        height:100%;
+        width:70%;
+        display:flex;
+        flex-direction:column;
+    }
+
+    .Tasks-Task-date-Div-DateTime-Date
+    {
+        height:50%;
+        width:100%;
+        display:flex;
+        flex-direction:row;
+        border-bottom:1px solid white;
+    }
+
+    .Tasks-Task-date-Div-DateTime-Date-Key
+    {
+        height: 100%;
+        width: 35%;
+        display: flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .Tasks-Task-date-Div-DateTime-Date-Value
+    {
+        height: 100%;
+        width: 65%;
+        display: flex;
+        align-items:center;
+    }
+
+
+    .Tasks-Task-date-Div-DateTime-Time
+    {
+        height:50%;
+        width:100%;
+        display:flex;
+        flex-direction:row;
+    }
+
+    .Tasks-Task-date-Div-DateTime-Time-Key 
+    {
+        height: 100%;
+        width: 35%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .Tasks-Task-date-Div-DateTime-Time-Value {
+        height: 100%;
+        width: 65%;
+        display: flex;
+        align-items: center;
+    }
+
+    .Tasks-Task-date-Div-End
+    {
+        height: 50%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    body::-webkit-scrollbar {
+        display: none;
+    }
+
+    .Card{
+        position:absolute;
+        z-index:10;
+        height:70%;
+        width:40%;
+        background-color: white;
+        border:1px solid black;
+        border-radius:30px;
+        padding:2.5%;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:space-between;
+    }
+
+    #TaskText
+    {
+        height:90%;
+        width:10%;
+        background-color:black;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:30px;
+        border:1px solid white;
+        border-radius:15px;
+    }
+
+    #FilterDropDown{
+        width:10%;
+    }
+
+    .task-menu
+    {
+        background-color:white;
+        display: none;
+    }
+
+    #LogoutButton
+    {
+        border-color:white;
+    }
+
+</style>
+
+
+<div class="Tasks-Inner-Container">
+    <div class="Tasks-Headings">
+        <div id="TaskText">Tasks</div>
+        <button class="btn btn-primary" id="AddTaskButton">Create</button>
+        <select id="FilterDropDown" class="form-select">
+            <option id="AllTasks">All</option>
+            <option id="DailyTasks">Daily</option>
+            <option id="CompletedTasks">Completed</option>
+        </select>
+
+        <button class="btn btn-danger" id="LogoutButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
+                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
+            </svg>
+            Logout
+        </button>
+    </div>
+    <div class="Tasks-Description">
+        
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        function InitializeTaskView(CardElement)
+        {
+
+            let Savebutton = CardElement.querySelector("#SaveButton");
+
+            let CancelButton = CardElement.querySelector("#CancelButton");
+
+            if (Savebutton) 
+            {
+                Savebutton.addEventListener("click", function () 
+                {
+                    event.preventDefault();
+
+                    let heading = CardElement.querySelector("#Heading").value
+                    let description = CardElement.querySelector("#Description").value;
+                    let status = CardElement.querySelector("#StatusDropdown").value;
+                    let taskType = CardElement.querySelector("#TypeDropdown").value;
+
+                    $.ajax({
+                        url: '@Url.Action("CreateTask", "Task")',
+                        type: 'Post',
+                        contentType: 'Application/json',
+                        data: JSON.stringify(
+                        {
+                             Heading: heading,
+                             TaskDescription: description,
+                             Status: status,
+                             TaskType: taskType
+                        }),
+                        success: function (response) 
+                        {
+                            let parent = CardElement.parentElement;
+                            parent.removeChild(CardElement);
+
+                            document.querySelector(".Tasks-Description").innerHTML = "";
+
+                            FetchAllTasks("All");
+                        },
+                        error: function (xhr, status, error) {
+
+                            if (xhr.status === 401) {
+                                alert("Authentication failed. Please check your username and password.");
+                            }
+                            else {
+                                alert("An error occurred. Please try again.");
+                            }
+                        }
+                    });
+                });
+            }
+
+            if (CancelButton) 
+            {
+                CancelButton.addEventListener("click", function () 
+                {
+                    let parent = CardElement.parentElement;
+                    parent.removeChild(CardElement);
+                });            
+            }
+        }
+
+        function InitializeTask(task,Status,taskId) 
+        {
+
+            task.addEventListener("click", function (event) {
+
+                event.preventDefault();
+
+                let CurrentTask = event.currentTarget;
+
+                let child = document.createElement('div');
+                child.className = "Card";
+
+                $.ajax({
+                    url: '@Url.Action("ReturnTaskView", "Task")',
+                    type: 'Get',
+                    contentType: 'Application/json',
+                    success: function (response) 
+                    {
+                        let AjaxResponse = document.createElement('div');
+                        AjaxResponse.innerHTML = response;
+
+                        AjaxResponse.querySelector("#Heading").textContent = CurrentTask.querySelector(".Tasks-Task-Info-Div-Heading").innerHTML
+                        AjaxResponse.querySelector("#Description").textContent = CurrentTask.querySelector(".Tasks-Task-Info-Div-Description").innerHTML;
+                        
+                        let dropdown = AjaxResponse.querySelector("#StatusDropdown");
+                        //dropdown.options[dropdown.selectedIndex].textContent = Status;
+
+                        let FunctionalButtons = AjaxResponse.querySelector('#FunctionalButtons');
+
+                        if(Status === "Completed")
+                        {
+                            let deletebutton = document.createElement('button');
+                            deletebutton.className = "btn btn-danger";
+                            deletebutton.id = "DeleteButton";
+                            deletebutton.textContent = "Delete";
+                            FunctionalButtons.appendChild(deletebutton);
+
+
+                            let typeDropdown = FunctionalButtons.querySelector("#TypeDropdown");
+                            FunctionalButtons.removeChild(typeDropdown);
+                        }
+    
+                        child.innerHTML = AjaxResponse.innerHTML;
+
+                        let parent = document.querySelector(".Tasks-Inner-Container");
+                        parent.appendChild(child);
+
+                        ConfigureCard(event,child,taskId);
+                    },
+                    error: function (xhr, status, error) {
+
+                        if (xhr.status === 401) {
+                            alert("Authentication failed. Please check your username and password.");
+                        }
+                        else {
+                            alert("An error occurred. Please try again.");
+                        }
+                    }
+                });
+            });
+
+            function ConfigureCard(event,CardElement,taskId) 
+            {
+                let Savebutton = CardElement.querySelector("#SaveButton");
+
+                let CancelButton = CardElement.querySelector("#CancelButton");
+
+                let DeleteButton = CardElement.querySelector("#DeleteButton");
+
+                let statusDropdown = CardElement.querySelector("#StatusDropdown");
+
+                if (Savebutton) 
+                {
+                    Savebutton.addEventListener("click", function () {
+
+                        let heading = CardElement.querySelector("#Heading").value
+                        let description = CardElement.querySelector("#Description").value;
+                        let status = CardElement.querySelector("#StatusDropdown").value;
+
+                        console.log("Heading = " + heading);
+                        console.log("Description" + description);
+                        console.log("Status = " + status);
+                        console.log("TaskId = " + taskId);
+
+                        $.ajax({
+                            url: '@Url.Action("UpdateTask", "Task")',
+                            type: 'Post',
+                            contentType: 'Application/json',
+                            data: JSON.stringify(
+                            {
+                                  taskId: parseInt(taskId, 10),
+                                  Heading: heading,
+                                  TaskDescription: description,
+                                  Status: status
+                            }),
+                            success: function (response) 
+                            {
+                                CardElement.parentElement.removeChild(CardElement);
+                                document.querySelector(".Tasks-Description").innerHTML = "";
+                                FetchAllTasks("All");
+                            },
+                            error: function (xhr, status, error) 
+                            {
+
+                                if (xhr.status === 401) 
+                                {
+                                    alert("Authentication failed. Please check your username and password.");
+                                }
+                                else 
+                                {
+                                    alert("An error occurred. Please try again.");
+                                }
+                            }
+                        });
+                    });
+                }
+
+                if (CancelButton) {
+                    CancelButton.addEventListener("click", function () {
+                        let parent = CardElement.parentElement;
+                        parent.removeChild(CardElement);
+                    });
+                }
+
+                if (DeleteButton) 
+                {
+                    DeleteButton.addEventListener("click", function () {
+
+                        console.log("TaskId being used for deletion =", taskId);
+                        let DeleteTaskId = taskId.toString();
+                        $.ajax({                           
+                            url: `@Url.Action("DeleteTask", "Task")?TaskId=${encodeURIComponent(taskId)}`,
+                            type: 'Delete',
+                            contentType: 'Application/json',
+                            data: JSON.stringify({
+                                TaskId: parseInt(DeleteTaskId, 10)
+                            }),
+                            success: function (response) 
+                            {
+                                CardElement.parentElement.removeChild(CardElement);
+                                document.querySelector(".Tasks-Description").innerHTML = "";
+                                FetchAllTasks("Completed");
+                            },
+                            error: function (xhr, status, error) 
+                            {
+
+                                if (xhr.status === 401) {
+                                    alert("Authentication failed. Please check your username and password.");
+                                }
+                                else {
+                                    alert("An error occurred. Please try again.");
+                                }
+                            }
+                        });
+                    });
+                }
+
+                if (statusDropdown) 
+                {
+                    statusDropdown.addEventListener("change", function (event) {
+
+                        event.preventDefault();
+                        var CurrentStatus = event.target.value;
+
+                        console.log(CurrentStatus);
+
+                        if (CurrentStatus === "Completed") {
+                            event.target.style.backgroundColor = 'lightgreen';
+                        }
+                        if (CurrentStatus === "Active") {
+                            event.target.style.backgroundColor = 'lightgrey';
+                        }
+                    });
+                }
+            }
+        }
+
+        function FetchAllTasks(filter)
+        {
+            let userId = 1;
+
+            $.ajax({
+                url: '@Url.Action("GetAllTasks", "Task")',
+                type: 'GET',
+                contentType: 'application/json',
+                data: {
+                    //UserId: parseInt(userId, 10),
+                    Filter: filter
+                },
+                success: function (response) 
+                {
+                    if (response.isSuccess === true && response.message === "Successfull" && Array.isArray(response.allTasks)) 
+                    {
+                        let parentContainer = document.querySelector(".Tasks-Description");
+
+                        if (!parentContainer) {
+                            console.error("Parent container '.Tasks-Description' not found.");
+                            return;
+                        }
+
+                        parentContainer.innerHTML = "";
+
+                        response.allTasks.forEach(item => {
+
+                            let task = document.createElement('div');
+                            task.className = "Tasks-Task";
+                            task.id = item.taskId.toString();
+
+                            let taskInfo = document.createElement('div');
+                            taskInfo.className = "Tasks-Task-Info";
+
+                            let taskInfoDiv = document.createElement('div');
+                            taskInfoDiv.className = "Tasks-Task-Info-Div";
+
+                            let taskInfoDivHeading = document.createElement('div');
+                            taskInfoDivHeading.className = "Tasks-Task-Info-Div-Heading";
+                            taskInfoDivHeading.innerText = item.heading;
+                            taskInfoDiv.appendChild(taskInfoDivHeading);
+
+                            let taskInfoDivDescription = document.createElement('div');
+                            taskInfoDivDescription.className = "Tasks-Task-Info-Div-Description";
+                            taskInfoDivDescription.innerText = item.taskDescription;
+                            taskInfoDiv.appendChild(taskInfoDivDescription);
+
+                            taskInfo.appendChild(taskInfoDiv);
+
+                            let taskDate = document.createElement('div');
+                            taskDate.className = "Tasks-Task-Date";
+
+                            let taskDateDiv = document.createElement('div');
+                            taskDateDiv.className = "Tasks-Task-date-Div";
+
+                            // Start Date-Time Section
+                            let taskDateDivStart = document.createElement('div');
+                            taskDateDivStart.className = "Tasks-Task-date-Div-Start";
+
+                            let taskDateDivStartHeading = document.createElement('div');
+                            taskDateDivStartHeading.className = "Tasks-Task-date-Div-heading";
+                            taskDateDivStartHeading.innerText = "Start";
+                            taskDateDivStart.appendChild(taskDateDivStartHeading);
+
+                            let taskDateDivStartDateTime = document.createElement('div');
+                            taskDateDivStartDateTime.className = "Tasks-Task-date-Div-DateTime";
+
+                            let taskDateDivStartDateTime_Date = document.createElement('div');
+                            taskDateDivStartDateTime_Date.className = "Tasks-Task-date-Div-DateTime-Date";
+
+                            let taskDateDivStartDateTime_DateKey = document.createElement('div');
+                            taskDateDivStartDateTime_DateKey.className = "Tasks-Task-date-Div-DateTime-Date-Key";
+                            taskDateDivStartDateTime_DateKey.textContent = "Date:";
+                            taskDateDivStartDateTime_Date.appendChild(taskDateDivStartDateTime_DateKey);
+
+                            let taskDateDivStartDateTime_DateValue = document.createElement('div');
+                            taskDateDivStartDateTime_DateValue.className = "Tasks-Task-date-Div-DateTime-Date-Value";
+                            taskDateDivStartDateTime_DateValue.textContent = item.startDate;
+                            taskDateDivStartDateTime_Date.appendChild(taskDateDivStartDateTime_DateValue);
+
+                            let taskDateDivStartDateTime_Time = document.createElement('div');
+                            taskDateDivStartDateTime_Time.className = "Tasks-Task-date-Div-DateTime-Time";
+
+                            let taskDateDivStartDateTime_TimeKey = document.createElement('div');
+                            taskDateDivStartDateTime_TimeKey.className = "Tasks-Task-date-Div-DateTime-Time-Key";
+                            taskDateDivStartDateTime_TimeKey.textContent = "Time:";
+                            taskDateDivStartDateTime_Time.appendChild(taskDateDivStartDateTime_TimeKey);
+
+                            let taskDateDivStartDateTime_TimeValue = document.createElement('div');
+                            taskDateDivStartDateTime_TimeValue.className = "Tasks-Task-date-Div-DateTime-Time-Value";
+                            taskDateDivStartDateTime_TimeValue.textContent = item.startTime;
+                            taskDateDivStartDateTime_Time.appendChild(taskDateDivStartDateTime_TimeValue);
+
+                            taskDateDivStartDateTime.appendChild(taskDateDivStartDateTime_Date);
+                            taskDateDivStartDateTime.appendChild(taskDateDivStartDateTime_Time);
+                            taskDateDivStart.appendChild(taskDateDivStartDateTime);
+
+                            // End Date-Time Section
+                            let taskDateDivEnd = document.createElement('div');
+                            taskDateDivEnd.className = "Tasks-Task-date-Div-End";
+
+                            let taskDateDivEndHeading = document.createElement('div');
+                            taskDateDivEndHeading.className = "Tasks-Task-date-Div-heading";
+                            taskDateDivEndHeading.innerText = "End";
+                            taskDateDivEnd.appendChild(taskDateDivEndHeading);
+
+                            let taskDateDivEndDateTime = document.createElement('div');
+                            taskDateDivEndDateTime.className = "Tasks-Task-date-Div-DateTime";
+
+                            let taskDateDivEndDateTime_Date = document.createElement('div');
+                            taskDateDivEndDateTime_Date.className = "Tasks-Task-date-Div-DateTime-Date";
+
+                            let taskDateDivEndDateTime_DateKey = document.createElement('div');
+                            taskDateDivEndDateTime_DateKey.className = "Tasks-Task-date-Div-DateTime-Date-Key";
+                            taskDateDivEndDateTime_DateKey.textContent = "Date:";
+                            taskDateDivEndDateTime_Date.appendChild(taskDateDivEndDateTime_DateKey);
+
+                            let taskDateDivEndDateTime_DateValue = document.createElement('div');
+                            taskDateDivEndDateTime_DateValue.className = "Tasks-Task-date-Div-DateTime-Date-Value";
+                            taskDateDivEndDateTime_DateValue.textContent = item.endDate;
+                            taskDateDivEndDateTime_Date.appendChild(taskDateDivEndDateTime_DateValue);
+
+                            let taskDateDivEndDateTime_Time = document.createElement('div');
+                            taskDateDivEndDateTime_Time.className = "Tasks-Task-date-Div-DateTime-Time";
+
+                            let taskDateDivEndDateTime_TimeKey = document.createElement('div');
+                            taskDateDivEndDateTime_TimeKey.className = "Tasks-Task-date-Div-DateTime-Time-Key";
+                            taskDateDivEndDateTime_TimeKey.textContent = "Time:";
+                            taskDateDivEndDateTime_Time.appendChild(taskDateDivEndDateTime_TimeKey);
+
+                            let taskDateDivEndDateTime_TimeValue = document.createElement('div');
+                            taskDateDivEndDateTime_TimeValue.className = "Tasks-Task-date-Div-DateTime-Time-Value";
+                            taskDateDivEndDateTime_TimeValue.textContent = item.endTime;
+                            taskDateDivEndDateTime_Time.appendChild(taskDateDivEndDateTime_TimeValue);
+
+                            taskDateDivEndDateTime.appendChild(taskDateDivEndDateTime_Date);
+                            taskDateDivEndDateTime.appendChild(taskDateDivEndDateTime_Time);
+                            taskDateDivEnd.appendChild(taskDateDivEndDateTime);
+
+                            taskDateDiv.appendChild(taskDateDivStart);
+                            taskDateDiv.appendChild(taskDateDivEnd);
+
+                            taskDate.appendChild(taskDateDiv);
+
+                            task.appendChild(taskInfo);
+                            task.appendChild(taskDate);
+
+                            parentContainer.appendChild(task);
+
+                            InitializeTask(task, item.status, item.taskId);
+                        });
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+
+            // document ready fetch all the tasks of the current user
+            FetchAllTasks("All");
+                     
+            document.querySelector("#AddTaskButton").addEventListener("click",function () 
+            {
+                event.preventDefault();
+                
+                $.ajax({
+                    
+                    type:'GET',
+                    url: '@Url.Action("ReturnTaskView", "Task")',
+                    contentType:'application/json',
+                    success: function (response) 
+                    {
+                        let child = document.createElement('div');
+                        child.className = "Card";
+
+                        child.innerHTML = response;
+
+                        document.querySelector(".Tasks-Inner-Container").appendChild(child);
+
+                        InitializeTaskView(child);
+                    },
+                    error: function (xhr, status, error) 
+                    {
+
+                        if (xhr.status === 401) {
+                            alert("Authentication failed. Please check your username and password.");
+                        }
+                        else {
+                            alert("An error occurred. Please try again.");
+                        }
+                    }
+                });
+            });
+
+            document.querySelector("#FilterDropDown").addEventListener("change", function (event) {
+                
+                event.preventDefault();
+
+                var CurrentStatus = event.target.value;
+
+                console.log(CurrentStatus);
+
+                FetchAllTasks(CurrentStatus);
+
+            });
+
+            document.querySelector("#LogoutButton").addEventListener("click", function () 
+            {
+                event.preventDefault();
+
+                location.href = '@Url.Action("ReturnLoginView", "Home")';
+            });
+
+        });
+
+    </script>
+}

@@ -1,0 +1,96 @@
+﻿<style>
+
+    #Heading
+    {
+        height:20%;
+        width:100%;
+    }
+
+    #Description {
+        height:60%;
+        width: 100%;
+    }
+
+    .Buttons
+    {
+        height:10%;
+        width: 100%;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+    }
+
+    #StatusDropdown
+    {
+        width:30%;
+        color:black;
+        background-color:lightgray;
+    }
+
+    #TypeDropdown {
+        width: 30%;
+        color: black;
+        background-color: lightgray;
+    }
+
+    .form-control
+    {
+        border-color:black;
+    }   
+
+    #FunctionalButtons
+    {
+        display:flex;
+        flex-direction:row;
+        width:80%;
+        align-items: center;
+        justify-content: flex-end;
+        gap:3%;
+    }
+
+</style>
+
+
+<textarea class="form-control" id="Heading" placeholder="Heading"></textarea>
+
+<textarea class="form-control" id="Description" name="Description" placeholder="Description"></textarea>
+
+<div class="Buttons" >
+    <button class="btn btn-primary" id="CancelButton">Cancel</button>
+    <div id="FunctionalButtons">
+        <select id="TypeDropdown" class="form-select">
+            <option id="NormalType">Normal</option>
+            <option id="DailyType">Daily</option>
+            <option id="MonthlyType">Monthly</option>
+        </select>
+        <select id="StatusDropdown" class="form-select">
+            <option id="ActiveOption">Active</option>
+            <option id="CompletedOption">Completed</option>
+        </select>
+        <button class="btn btn-primary" id="SaveButton">Save</button>
+    </div>
+</div>
+
+<script>
+    let statusDropdown = CardElement.querySelector("#StatusDropdown");
+
+    if (statusDropdown) {
+        statusDropdown.addEventListener("change", function (event) {
+
+            event.preventDefault();
+            var CurrentStatus = event.target.value;
+
+            console.log(CurrentStatus);
+
+            if (CurrentStatus === "Pending") {
+                event.target.style.backgroundColor = 'blue';
+            }
+            if (CurrentStatus === "Completed") {
+                event.target.style.backgroundColor = 'green';
+            }
+            if (CurrentStatus === "Active") {
+                event.target.style.backgroundColor = 'grey';
+            }
+        });
+    }
+</script>
